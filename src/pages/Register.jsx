@@ -44,7 +44,7 @@ export default function Register() {
     }}>
       <div className="card" style={{ width: '100%', maxWidth: 380, margin: '0 12px' }}>
         <div style={{ textAlign: 'center', marginBottom: 28 }}>
-          <div style={{ fontSize: 40, marginBottom: 8 }}>🎲</div>
+          <div style={{ fontSize: 40, marginBottom: 8 }}>📱</div>
           <h1 style={{ fontSize: 22, fontWeight: 700, color: '#667eea' }}>k-dice</h1>
           <p style={{ fontSize: 13, color: '#718096', marginTop: 4 }}>Crear cuenta</p>
         </div>

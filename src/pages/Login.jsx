@@ -34,10 +34,37 @@ export default function Login() {
   return (
     <div className="auth-page">
       <div className="auth-card">
-        <div className="auth-logo">
-          <div className="auth-logo-icon">🎲</div>
-          <h1>KDice POS</h1>
-          <p>Sistema de gestión de citas y pagos</p>
+        <div className="auth-logo" style={{ textAlign: 'center' }}>
+          <div style={{
+            width: 100,
+            height: 100,
+            borderRadius: '50%',
+            background: 'linear-gradient(135deg, #FF5E00 0%, #E0007F 50%, #4B0082 100%)',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: 20,
+            overflow: 'hidden',
+            boxShadow: '0 8px 24px rgba(255, 94, 0, 0.3)',
+            border: '3px solid rgba(255, 255, 255, 0.2)'
+          }}>
+            <img src="/kdice-logo.svg" alt="KDice Reservas" 
+                 style={{ 
+                   width: 140, 
+                   height: 140, 
+                   objectFit: 'contain',
+                   filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))'
+                 }} />
+          </div>
+          <p style={{
+            fontSize: '16px',
+            color: '#4a5568',
+            fontWeight: '500',
+            margin: '0',
+            textAlign: 'center'
+          }}>
+            Sistema de gestión de citas y pagos
+          </p>
         </div>
         {error && <div className="alert alert-error"><span>⚠️</span> {error}</div>}
         <form onSubmit={handleSubmit}>

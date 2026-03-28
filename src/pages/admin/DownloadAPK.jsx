@@ -20,10 +20,35 @@ export default function DownloadAPK() {
 
   const loadAPKStatus = async () => {
     try {
-      const res = await api.get(`/apk/status/${business.id}`);
-      setApkStatus(res.data);
+      // Verificar si la APK global existe en la carpeta pública
+      const response = await fetch('/apk/kdice-reservas.apk', { method: 'HEAD' });
+      
+      if (response.ok) {
+        const contentLength = response.headers.get('content-length');
+        const sizeInMB = contentLength ? (contentLength / 1024 / 1024).toFixed(1) : null;
+        
+        setApkStatus({
+          apkReady: true,
+          apkSize: sizeInMB ? `${sizeInMB} MB` : 'Desconocido',
+          lastGenerated: new Date().toISOString(),
+          universal: true
+        });
+      } else {
+        setApkStatus({
+          apkReady: false,
+          apkSize: null,
+          lastGenerated: null,
+          universal: true
+        });
+      }
     } catch (e) {
-      console.error('Error loading APK status:', e);
+      console.error('Error checking APK status:', e);
+      setApkStatus({
+        apkReady: false,
+        apkSize: null,
+        lastGenerated: null,
+        universal: true
+      });
     }
   };
 
@@ -41,31 +66,30 @@ export default function DownloadAPK() {
     setSuccessMsg('');
 
     try {
-      const res = await api.post('/apk/generate-apk', {
-        businessId: business.id,
-        businessSlug: business.slug,
-        businessName: business.name,
-      });
-
-      if (!res.data.apkReady) {
-        setError('La APK no está disponible en este momento. Contacta a soporte.');
+      // Descargar APK global directamente desde la carpeta pública
+      const downloadUrl = '/apk/kdice-reservas.apk';
+      
+      // Verificar si el archivo existe
+      const response = await fetch(downloadUrl, { method: 'HEAD' });
+      if (!response.ok) {
+        setError('La APK no está disponible. Contacta al administrador para que suba la APK generada desde Android Studio.');
         setLoading(false);
         return;
       }
 
       setSuccessMsg('¡APK lista! Iniciando descarga...');
 
-      const downloadUrl = `/api/apk/download/${business.slug}/android`;
+      // Crear link de descarga
       const link = document.createElement('a');
       link.href = downloadUrl;
-      link.download = `kdice-${business.slug}.apk`;
+      link.download = 'kdice-reservas.apk';
       link.setAttribute('target', '_blank');
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
 
     } catch (e) {
-      setError(e.response?.data?.error || 'Error al descargar la APK. Intenta de nuevo.');
+      setError('Error al descargar la APK. Intenta de nuevo.');
     } finally {
       setLoading(false);
     }
@@ -160,7 +184,7 @@ export default function DownloadAPK() {
           border: '1px solid #c7d2fe', marginBottom: 24,
         }}>
           <p style={{ margin: 0, color: '#4c51bf', fontSize: 14 }}>
-            ℹ️ La app es universal. Al iniciar sesión con tu cuenta de <strong>{business.name}</strong>,
+            ℹ️ Esta es una APK universal <strong>KDice Reservas</strong>. Al instalarla e iniciar sesión con tu cuenta de <strong>{business.name}</strong>,
             verás automáticamente los datos de tu negocio.
           </p>
         </div>

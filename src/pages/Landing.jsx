@@ -105,7 +105,7 @@ export default function Landing() {
         alignItems: 'center', position: 'sticky', top: 0, zIndex: 100,
         boxShadow: '0 1px 3px rgba(0,0,0,0.05)', height: 64,
       }}>
-        <div style={{ fontSize: 22, fontWeight: 800, color: '#667eea', flexShrink: 0 }}>🎲 KDice</div>
+        <div style={{ fontSize: 22, fontWeight: 800, color: '#667eea', flexShrink: 0 }}>📱 KDice POS</div>
 
         {/* Desktop links */}
         <div className="nav-links-desktop" style={{ display: 'flex', gap: 28, alignItems: 'center' }}>

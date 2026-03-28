@@ -22,6 +22,7 @@ import Payments     from './pages/admin/Payments';
 import EmployeeDashboard from './pages/employee/EmployeeDashboard';
 import Landing from './pages/Landing';
 import DownloadAPK from './pages/admin/DownloadAPK';
+import DownloadAPKPublic from './pages/DownloadAPKPublic';
 import APKHome from './pages/APKHome';
 import { useAuth } from './context/AuthContext';
 // ===== PANEL SUPER ADMIN (independiente) =====
@@ -110,8 +111,29 @@ function MobileSlugBridge() {
 }
 
 function RootRoute() {
-  // SIMPLEMENTE mostrar siempre la Landing page
-  // El usuario puede navegar manualmente a donde quiera
+  const { user } = useAuth();
+  
+  // Si es APK y no hay usuario, mostrar login
+  // Si es APK y hay usuario, mostrar dashboard según rol
+  // Si es web, mostrar landing normal
+  if (Capacitor.isNativePlatform()) {
+    if (!user) {
+      return <Login />;
+    }
+    
+    // Usuario autenticado en APK, redirigir según rol
+    if (user.role === 'superadmin') {
+      return <Navigate to="/superadmin" replace />;
+    } else if (user.role === 'admin') {
+      return <Navigate to="/admin" replace />;
+    } else if (user.role === 'employee') {
+      return <Navigate to="/employee" replace />;
+    } else {
+      return <Navigate to="/my-appointments" replace />;
+    }
+  }
+  
+  // Para web, mostrar siempre la Landing page
   return <Landing />;
 }
 
@@ -149,6 +171,7 @@ export default function App() {
             <Route index element={<MyAppointments />} />
           </Route>
           <Route path="/apk-home" element={<APKHome />} />
+          <Route path="/download-apk" element={<DownloadAPKPublic />} />
           <Route path="/:slug"      element={<BusinessLanding />} />
           <Route path="/:slug/book" element={<BookAppointment />} />
           <Route path="/" element={<RootRoute />} />

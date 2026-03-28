@@ -1,5 +1,5 @@
 {
-  "appId": "com.kdice.app",
-  "appName": "KDice",
+  "appId": "com.kdice.reservas",
+  "appName": "KDice Reservas",
   "webDir": "dist"
 }

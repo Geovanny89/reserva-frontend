@@ -4,10 +4,18 @@ import { Capacitor } from '@capacitor/core';
 import { useAuth } from '../context/AuthContext';
 
 export default function APKHome() {
-  const { user } = useAuth();
+  const { user, business } = useAuth();
   const navigate = useNavigate();
   const [currentTime, setCurrentTime] = useState(new Date());
   const [notifications, setNotifications] = useState([]);
+
+  // Si no hay usuario, redirigir al login
+  useEffect(() => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+  }, [user, navigate]);
 
   // Simular notificaciones de recordatorio
   useEffect(() => {
@@ -16,11 +24,12 @@ export default function APKHome() {
       
       // Simular notificaciones de citas (en una app real vendrían de la BD)
       const now = new Date();
+      const businessName = business?.name || 'KDice Reservas';
       const mockNotifications = [
         {
           id: 1,
           title: '🔔 Recordatorio',
-          message: 'Tu cita en Latotty es en 1 hora',
+          message: `Tu cita en ${businessName} es en 1 hora`,
           time: new Date(now.getTime() + 60 * 60 * 1000), // 1 hora después
           type: 'reminder'
         },
@@ -33,324 +42,359 @@ export default function APKHome() {
         },
         {
           id: 3,
-          title: '✅ Confirmación',
-          message: 'Tu cita de hoy ha sido confirmada',
-          time: new Date(now.getTime() + 5 * 60 * 1000), // 5 minutos después
-          type: 'confirmation'
+          title: '💰 Pago recibido',
+          message: 'Pago confirmado para servicio de corte de cabello',
+          time: new Date(now.getTime() + 15 * 60 * 1000), // 15 minutos después
+          type: 'payment'
         }
       ];
-
-      // Filtrar notificaciones futuras
-      const futureNotifications = mockNotifications.filter(
-        notif => notif.time > now
-      );
-
-      setNotifications(futureNotifications.slice(0, 3)); // Máximo 3 notificaciones
-    }, 60000); // Cada minuto
+      
+      setNotifications(mockNotifications);
+    }, 1000);
 
     return () => clearInterval(timer);
-  }, []);
-
-  const handleLogin = () => {
-    navigate('/login');
-  };
+  }, [business]);
 
   const formatTime = (date) => {
+    return date.toLocaleTimeString('es-ES', { 
+      hour: '2-digit', 
+      minute: '2-digit',
+      hour12: false 
+    });
+  };
+
+  const formatNotificationTime = (date) => {
     const now = new Date();
     const diff = date - now;
-    const minutes = Math.floor(diff / (1000 * 60));
+    const minutes = Math.floor(diff / 60000);
+    
+    if (minutes < 0) return 'Ahora';
+    if (minutes < 60) return `En ${minutes} min`;
     const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
-
-    if (days > 0) return `En ${days} día(s)`;
-    if (hours > 0) return `En ${hours} hora(s)`;
-    if (minutes > 0) return `En ${minutes} minuto(s)`;
-    return 'Ahora';
+    return `En ${hours} h`;
   };
 
-  const getNotificationIcon = (type) => {
-    switch (type) {
-      case 'reminder': return '⏰';
-      case 'appointment': return '📅';
-      case 'confirmation': return '✅';
-      default: return '🔔';
-    }
-  };
-
-  return (
-    <div style={{
-      minHeight: '100vh',
-      backgroundColor: '#f8fafc',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-    }}>
-      {/* Header con branding del negocio */}
-      <div style={{
-        background: 'linear-gradient(135deg, #4f46e5, #7c3aed)',
-        padding: '24px 20px',
-        color: 'white',
-        boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+  // Si no hay usuario, mostrar loading
+  if (!user) {
+    return (
+      <div style={{ 
+        minHeight: '100vh', 
+        background: 'linear-gradient(135deg, #FF5E00 0%, #E0007F 50%, #4B0082 100%)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'column',
+        color: 'white'
       }}>
         <div style={{
+          width: 80,
+          height: 80,
+          borderRadius: '50%',
+          background: 'rgba(255, 255, 255, 0.2)',
           display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginBottom: 20,
+          overflow: 'hidden'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <div style={{
-              width: '40px',
-              height: '40px',
-              backgroundColor: 'rgba(255,255,255,0.2)',
-              borderRadius: '10px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '20px'
-            }}>
-              🏢
-            </div>
-            <div>
-              <h1 style={{ 
-                margin: '0', 
-                fontSize: '20px', 
-                fontWeight: '700' 
-              }}>
-                LATOTTY
-              </h1>
-              <p style={{ 
-                margin: '4px 0 0 0', 
-                fontSize: '14px',
-                opacity: 0.9 
-              }}>
-                Sistema de Gestión de Citas
-              </p>
-            </div>
+          <img src="/kdice-logo.svg" alt="KDice Reservas" 
+               style={{ width: 120, height: 120, objectFit: 'contain' }} />
+        </div>
+        <h2 style={{ fontSize: '24px', fontWeight: '700', margin: '0 0 8px 0' }}>
+          KDice Reservas
+        </h2>
+        <p style={{ fontSize: '16px', opacity: 0.9, margin: 0 }}>
+          Cargando...
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ minHeight: '100vh', background: '#f5f6fa', fontFamily: 'Arial, sans-serif' }}>
+      {/* Header */}
+      <div style={{
+        background: 'linear-gradient(135deg, #FF5E00 0%, #E0007F 50%, #4B0082 100%)',
+        color: 'white',
+        padding: '20px',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div style={{
+            width: '60px',
+            height: '60px',
+            borderRadius: '50%',
+            background: 'rgba(255, 255, 255, 0.2)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            overflow: 'hidden'
+          }}>
+            <img src="/kdice-logo.svg" alt="KDice Reservas" 
+                 style={{ width: 90, height: 90, objectFit: 'contain' }} />
           </div>
-          
-          {/* Botón de login para admin/empleados */}
-          {!user && (
-            <button
-              onClick={handleLogin}
-              style={{
-                padding: '10px 16px',
-                backgroundColor: 'rgba(255,255,255,0.2)',
-                color: 'white',
-                border: '1px solid rgba(255,255,255,0.3)',
-                borderRadius: '8px',
-                fontSize: '14px',
-                fontWeight: '600',
-                cursor: 'pointer'
-              }}
-            >
-                🔑 Admin/Empleado
-            </button>
-          )}
+          <div>
+            <h1 style={{ 
+              margin: '0 0 4px 0', 
+              fontSize: '20px', 
+              fontWeight: '700' 
+            }}>
+              {business?.name || 'KDice Reservas'}
+            </h1>
+            <p style={{ 
+              margin: '4px 0 0 0', 
+              fontSize: '14px',
+              opacity: 0.9 
+            }}>
+              Sistema de Gestión de Citas
+            </p>
+          </div>
+        </div>
+        
+        <div style={{ textAlign: 'right' }}>
+          <div style={{ fontSize: '24px', fontWeight: '700' }}>
+            {formatTime(currentTime)}
+          </div>
+          <div style={{ fontSize: '12px', opacity: 0.9 }}>
+            {currentTime.toLocaleDateString('es-ES', { 
+              weekday: 'short', 
+              day: 'numeric', 
+              month: 'short' 
+            })}
+          </div>
         </div>
       </div>
 
-      {/* Contenido principal */}
+      {/* Main Content */}
       <div style={{ padding: '20px' }}>
+        {/* Quick Stats */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: user ? '2fr 1fr' : '1fr',
-          gap: '20px',
-          maxWidth: '1200px',
-          margin: '0 auto'
+          gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+          gap: '15px',
+          marginBottom: '25px'
         }}>
-          
-          {/* Panel izquierdo - Información del negocio */}
           <div style={{
-            backgroundColor: 'white',
+            background: 'white',
+            padding: '20px',
             borderRadius: '12px',
-            padding: '24px',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+            textAlign: 'center',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
           }}>
-            <h2 style={{ 
-              color: '#1f2937', 
-              fontSize: '18px',
-              marginBottom: '16px',
-              fontWeight: '600'
-            }}>
-              📍 Información del Negocio
-            </h2>
-            
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span style={{ 
+            <div style={{ fontSize: '32px', fontWeight: '700', color: '#FF5E00', marginBottom: '8px' }}>
+              8
+            </div>
+            <div style={{ fontSize: '14px', color: '#64748b' }}>
+              Citas hoy
+            </div>
+          </div>
+          
+          <div style={{
+            background: 'white',
+            padding: '20px',
+            borderRadius: '12px',
+            textAlign: 'center',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+          }}>
+            <div style={{ fontSize: '32px', fontWeight: '700', color: '#10b981', marginBottom: '8px' }}>
+              3
+            </div>
+            <div style={{ fontSize: '14px', color: '#64748b' }}>
+              Pendientes
+            </div>
+          </div>
+          
+          <div style={{
+            background: 'white',
+            padding: '20px',
+            borderRadius: '12px',
+            textAlign: 'center',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+          }}>
+            <div style={{ fontSize: '32px', fontWeight: '700', color: '#f59e0b', marginBottom: '8px' }}>
+              $450
+            </div>
+            <div style={{ fontSize: '14px', color: '#64748b' }}>
+              Ingresos hoy
+            </div>
+          </div>
+        </div>
+
+        {/* Notifications */}
+        <div style={{
+          background: 'white',
+          borderRadius: '12px',
+          padding: '20px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+        }}>
+          <h2 style={{
+            margin: '0 0 20px 0',
+            fontSize: '18px',
+            fontWeight: '700',
+            color: '#1f2937',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}>
+            📬 Notificaciones
+          </h2>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {notifications.map(notification => (
+              <div key={notification.id} style={{
+                background: '#f8fafc',
+                border: '1px solid #e2e8f0',
+                borderRadius: '8px',
+                padding: '16px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px'
+              }}>
+                <div style={{
                   fontSize: '24px',
                   minWidth: '40px',
                   textAlign: 'center'
                 }}>
-                  🏢
-                </span>
-                <div>
-                  <h3 style={{ 
-                    margin: '0', 
-                    fontSize: '16px',
-                    fontWeight: '700',
-                    color: '#1f2937'
+                  {notification.title.split(' ')[0]}
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{
+                    fontWeight: '600',
+                    color: '#1f2937',
+                    marginBottom: '4px'
                   }}>
-                    LATOTTY
-                  </h3>
-                  <p style={{ 
-                    margin: '4px 0', 
+                    {notification.title}
+                  </div>
+                  <div style={{
                     fontSize: '14px',
                     color: '#64748b'
                   }}>
-                    Peluquería y Barbería Profesional
-                  </p>
+                    {notification.message}
+                  </div>
+                </div>
+                <div style={{
+                  fontSize: '12px',
+                  color: '#94a3b8',
+                  whiteSpace: 'nowrap'
+                }}>
+                  {formatNotificationTime(notification.time)}
                 </div>
               </div>
-              
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ fontSize: '16px' }}>📍</span>
-                  <span style={{ color: '#374151' }}>Cra 45 #123-456</span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ fontSize: '16px' }}>📞</span>
-                  <span style={{ color: '#374151' }}>+57 300 123 4567</span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ fontSize: '16px' }}>🕐</span>
-                  <span style={{ color: '#374151' }}>Lun a Sáb: 9:00 AM - 7:00 PM</span>
-                </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Business Info */}
+        <div style={{
+          background: 'white',
+          borderRadius: '12px',
+          padding: '20px',
+          marginTop: '20px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+        }}>
+          <h2 style={{
+            margin: '0 0 20px 0',
+            fontSize: '18px',
+            fontWeight: '700',
+            color: '#1f2937',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}>
+            📍 Información del Negocio
+          </h2>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, #FF5E00 0%, #E0007F 50%, #4B0082 100%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                overflow: 'hidden'
+              }}>
+                <img src="/kdice-logo.svg" alt="KDice Reservas" 
+                     style={{ width: 60, height: 60, objectFit: 'contain' }} />
+              </div>
+              <div>
+                <h3 style={{
+                  margin: '0 0 8px 0',
+                  fontWeight: '700',
+                  color: '#1f2937'
+                }}>
+                  {business?.name || 'KDice Reservas'}
+                </h3>
+                <p style={{ 
+                  margin: '4px 0', 
+                  fontSize: '14px',
+                  color: '#64748b'
+                }}>
+                  Sistema de Reservas Profesional
+                </p>
               </div>
             </div>
-
-            {/* Botones de acción rápida */}
-            <div style={{ marginTop: '20px' }}>
-              <h3 style={{ 
-                color: '#1f2937', 
-                fontSize: '16px',
-                marginBottom: '12px',
-                fontWeight: '600'
-              }}>
-                🚀 Acciones Rápidas
-              </h3>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                <button
-                  onClick={() => alert('Función de reserva próximamente')}
-                  style={{
-                    padding: '16px',
-                    backgroundColor: '#10b981',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '8px',
-                    fontSize: '14px',
-                    fontWeight: '600',
-                    cursor: 'pointer'
-                  }}
-                >
-                  📅 Reservar Cita
-                </button>
-                <button
-                  onClick={() => alert('Ver mis citas próximamente')}
-                  style={{
-                    padding: '16px',
-                    backgroundColor: '#8b5cf6',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '8px',
-                    fontSize: '14px',
-                    fontWeight: '600',
-                    cursor: 'pointer'
-                  }}
-                >
-                  📋 Mis Citas
-                </button>
+            
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <span style={{ fontSize: '24px', minWidth: '40px', textAlign: 'center' }}>📍</span>
+              <div style={{ fontSize: '14px', color: '#64748b' }}>
+                {business?.address || 'Dirección del negocio'}
+              </div>
+            </div>
+            
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <span style={{ fontSize: '24px', minWidth: '40px', textAlign: 'center' }}>📞</span>
+              <div style={{ fontSize: '14px', color: '#64748b' }}>
+                {business?.phone || '+1 234 567 890'}
+              </div>
+            </div>
+            
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <span style={{ fontSize: '24px', minWidth: '40px', textAlign: 'center' }}>🕐</span>
+              <div style={{ fontSize: '14px', color: '#64748b' }}>
+                {business?.hours || 'Lun-Sáb: 9:00 AM - 8:00 PM'}
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Panel derecho - Notificaciones */}
-          {user && (
-            <div style={{
-              backgroundColor: 'white',
+        {/* Logout Button */}
+        <div style={{ marginTop: '25px', textAlign: 'center' }}>
+          <button
+            onClick={() => {
+              localStorage.removeItem('token');
+              localStorage.removeItem('user');
+              localStorage.removeItem('business');
+              navigate('/login');
+            }}
+            style={{
+              background: '#ef4444',
+              color: 'white',
+              border: 'none',
               borderRadius: '12px',
-              padding: '24px',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-            }}>
-              <h2 style={{ 
-                color: '#1f2937', 
-                fontSize: '18px',
-                marginBottom: '16px',
-                fontWeight: '600'
-              }}>
-                🔔 Notificaciones
-              </h2>
-              
-              <div style={{ marginBottom: '16px' }}>
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  padding: '8px 0',
-                  borderBottom: '1px solid #e5e7eb'
-                }}>
-                  <span style={{ fontSize: '12px', color: '#64748b' }}>Hora actual</span>
-                  <span style={{ fontSize: '14px', fontWeight: '600', color: '#1f2937' }}>
-                    {currentTime.toLocaleTimeString('es-CO', { 
-                      hour: '2-digit', 
-                      minute: '2-digit' 
-                    })}
-                  </span>
-                </div>
-              </div>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                {notifications.length > 0 ? (
-                  notifications.map(notif => (
-                    <div key={notif.id} style={{
-                      backgroundColor: '#f8fafc',
-                      border: '1px solid #e5e7eb',
-                      borderRadius: '8px',
-                      padding: '12px',
-                      display: 'flex',
-                      alignItems: 'flex-start',
-                      gap: '12px'
-                    }}>
-                      <span style={{ fontSize: '16px' }}>
-                        {getNotificationIcon(notif.type)}
-                      </span>
-                      <div style={{ flex: 1 }}>
-                        <div style={{
-                          fontSize: '12px',
-                          fontWeight: '600',
-                          color: '#1f2937',
-                          marginBottom: '4px'
-                        }}>
-                          {notif.title}
-                        </div>
-                        <div style={{
-                          fontSize: '14px',
-                          color: '#64748b',
-                          marginBottom: '4px'
-                        }}>
-                          {notif.message}
-                        </div>
-                        <div style={{
-                          fontSize: '12px',
-                          color: '#8b5cf6',
-                          fontWeight: '500'
-                        }}>
-                          {formatTime(notif.time)}
-                        </div>
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <div style={{
-                    textAlign: 'center',
-                    padding: '40px 20px',
-                    color: '#9ca3af',
-                    fontSize: '14px'
-                  }}>
-                    📭 No tienes notificaciones nuevas
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
+              padding: '16px 32px',
+              fontSize: '16px',
+              fontWeight: '700',
+              cursor: 'pointer',
+              boxShadow: '0 4px 12px rgba(239,68,68,0.4)',
+              transition: 'all 0.3s',
+              minWidth: '200px'
+            }}
+          >
+            � Cerrar Sesión
+          </button>
+          <p style={{ 
+            marginTop: '12px', 
+            fontSize: '14px', 
+            color: '#64748b' 
+          }}>
+            Salir de la aplicación
+          </p>
         </div>
       </div>
 
@@ -363,9 +407,10 @@ export default function APKHome() {
         color: '#6b7280',
         fontSize: '14px'
       }}>
-        <p>© 2024 LATOTTY - Powered by KDice POS</p>
+        <p>© 2024 {business?.name || 'KDice Reservas'} - Powered by KDice Reservas</p>
         <p style={{ fontSize: '12px', marginTop: '4px' }}>
-          🎲 Sistema de Gestión de Citas v1.0
+          <img src="/kdice-logo.svg" alt="KDice" style={{ width: '16px', height: '16px', verticalAlign: 'middle', marginRight: '4px' }} />
+          Sistema de Gestión de Citas v1.0
         </p>
       </div>
     </div>
