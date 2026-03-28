@@ -5,13 +5,16 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:prod": "vite build --mode production",
     "preview": "vite preview",
     "cap:sync": "npx cap sync android",
     "cap:open": "npx cap open android",
     "apk:debug": "npm run build && npx cap sync android && cd android && gradlew.bat assembleDebug",
     "apk:release": "npm run build && npx cap sync android && cd android && gradlew.bat assembleRelease",
     "apk:global": "node scripts/build-apk-global.js",
-    "copy-apk": "node scripts/copy-apk.js"
+    "copy-apk": "node scripts/copy-apk.js",
+    "clean-build": "node scripts/clean-and-build.js",
+    "build-apk-prod": "npm run build:prod && node scripts/clean-and-build.js"
   },
   "dependencies": {
     "@capacitor/android": "^8.3.0",
