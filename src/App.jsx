@@ -22,6 +22,8 @@ import Payments     from './pages/admin/Payments';
 import EmployeeDashboard from './pages/employee/EmployeeDashboard';
 import Landing from './pages/Landing';
 import DownloadAPK from './pages/admin/DownloadAPK';
+import APKHome from './pages/APKHome';
+import { useAuth } from './context/AuthContext';
 // ===== PANEL SUPER ADMIN (independiente) =====
 import SuperAdminHome  from './pages/superadmin/SuperAdminHome';
 import Businesses      from './pages/superadmin/Businesses';
@@ -146,6 +148,7 @@ export default function App() {
           <Route path="/my-appointments" element={<ProtectedRoute roles={['client']} />}>
             <Route index element={<MyAppointments />} />
           </Route>
+          <Route path="/apk-home" element={<APKHome />} />
           <Route path="/:slug"      element={<BusinessLanding />} />
           <Route path="/:slug/book" element={<BookAppointment />} />
           <Route path="/" element={<RootRoute />} />
