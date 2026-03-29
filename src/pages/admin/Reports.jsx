@@ -176,14 +176,16 @@ function RangeCalendarPicker({ startValue, endValue, onStartChange, onEndChange,
 }
 
 function getDateRange(period, customStart, customEnd) {
-  const now = new Date();
+  const todayStr = todayColombia();
+  const now = new Date(`${todayStr}T00:00:00-05:00`);
+
   if (period === 'day') {
-    const s = new Date(now); s.setHours(0, 0, 0, 0);
+    const s = new Date(now);
     const e = new Date(now); e.setHours(23, 59, 59, 999);
     return { start: s, end: e, label: 'Hoy' };
   }
   if (period === 'week') {
-    const s = new Date(now); s.setDate(now.getDate() - now.getDay()); s.setHours(0, 0, 0, 0);
+    const s = new Date(now); s.setDate(now.getDate() - now.getDay());
     const e = new Date(s); e.setDate(s.getDate() + 6); e.setHours(23, 59, 59, 999);
     return { start: s, end: e, label: 'Esta semana' };
   }
@@ -194,8 +196,8 @@ function getDateRange(period, customStart, customEnd) {
   }
   if (period === 'custom' && customStart && customEnd) {
     return {
-      start: new Date(customStart + 'T00:00:00'),
-      end:   new Date(customEnd   + 'T23:59:59'),
+      start: new Date(`${customStart}T00:00:00-05:00`),
+      end:   new Date(`${customEnd}T23:59:59-05:00`),
       label: `${formatDateES(customStart)} → ${formatDateES(customEnd)}`,
     };
   }

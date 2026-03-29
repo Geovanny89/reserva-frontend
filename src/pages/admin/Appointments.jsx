@@ -21,7 +21,11 @@ export default function Appointments() {
   const { business } = useAuth();
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(() => {
+    // Inicializar con la fecha actual en Colombia
+    const colombiaStr = new Date().toLocaleString("en-US", {timeZone: "America/Bogota"});
+    return new Date(colombiaStr);
+  });
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [services, setServices] = useState([]);
@@ -111,9 +115,9 @@ export default function Appointments() {
   };
 
   const filteredAppointments = useMemo(() => {
-    const dateStr = selectedDate.toISOString().split('T')[0];
+    const dateStr = selectedDate.toLocaleDateString('en-CA', { timeZone: 'America/Bogota' });
     return appointments.filter(apt => {
-      const aptDate = new Date(apt.startTime).toISOString().split('T')[0];
+      const aptDate = new Date(apt.startTime).toLocaleDateString('en-CA', { timeZone: 'America/Bogota' });
       return aptDate === dateStr;
     });
   }, [appointments, selectedDate]);

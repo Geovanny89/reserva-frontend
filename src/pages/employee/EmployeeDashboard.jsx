@@ -29,7 +29,10 @@ export default function EmployeeDashboard() {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [selectedDate, setSelectedDate] = useState(() => {
+    // Inicializar con la fecha actual en Colombia (YYYY-MM-DD)
+    return new Date().toLocaleDateString('en-CA', { timeZone: 'America/Bogota' });
+  });
 
   useEffect(() => {
     loadEmployeeInfo();
