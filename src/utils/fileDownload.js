@@ -1,6 +1,7 @@
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import { Capacitor } from '@capacitor/core';
 import { Share } from '@capacitor/share';
+import * as XLSX from 'xlsx';
 
 /**
  * Guarda archivo en dispositivo (para APK)
