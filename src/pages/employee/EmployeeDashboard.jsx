@@ -3,6 +3,8 @@ import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import ThemeToggle from '../../components/ThemeToggle';
 import api from '../../api/client';
+import { Capacitor } from '@capacitor/core';
+import notificationService from '../../services/notificationService';
 
 const STATUS_LABELS = { 
   pending: 'Pendiente', 
@@ -47,6 +49,17 @@ export default function EmployeeDashboard() {
       loadAppointments();
     }
   }, [employee, selectedDate]);
+
+  // Programar notificaciones cuando se cargan las citas (solo en APK)
+  useEffect(() => {
+    if (Capacitor.isNativePlatform() && appointments.length > 0 && employee) {
+      notificationService.scheduleMultipleNotifications(
+        appointments,
+        employee.id,
+        employee.User?.name || 'Empleado'
+      );
+    }
+  }, [appointments, employee]);
 
   const loadAppointments = async () => {
     try {

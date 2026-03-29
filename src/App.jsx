@@ -25,6 +25,7 @@ import DownloadAPK from './pages/admin/DownloadAPK';
 import DownloadAPKPublic from './pages/DownloadAPKPublic';
 import APKHome from './pages/APKHome';
 import { useAuth } from './context/AuthContext';
+import notificationService from './services/notificationService';
 // ===== PANEL SUPER ADMIN (independiente) =====
 import SuperAdminHome  from './pages/superadmin/SuperAdminHome';
 import Businesses      from './pages/superadmin/Businesses';
@@ -138,6 +139,13 @@ function RootRoute() {
 }
 
 export default function App() {
+  // Inicializar servicio de notificaciones al montar la app (solo en APK)
+  useEffect(() => {
+    if (Capacitor.isNativePlatform()) {
+      notificationService.initialize();
+    }
+  }, []);
+
   return (
     <AuthProvider>
       <BrowserRouter>
