@@ -25,16 +25,25 @@ class NotificationService {
       if (display === 'granted') {
         console.log('✅ Permisos de notificación concedidos');
         
+        // Crear canal de notificaciones para Android
+        await LocalNotifications.createChannel({
+          id: 'appointment_reminders',
+          name: 'Recordatorios de Citas',
+          description: 'Notificaciones de recordatorio para tus citas programadas',
+          importance: 5, // Importancia máxima (sonido, popup)
+          visibility: 1, // Visible en pantalla de bloqueo
+          sound: 'default',
+          vibration: true
+        });
+
         // Configurar listener para cuando se hace clic en notificación
         LocalNotifications.addListener('localNotificationActionPerformed', (notification) => {
           console.log('🔔 Notificación clickeada:', notification);
-          // Aquí puedes navegar a la pantalla de citas
         });
 
         // Configurar listener para cuando llega una notificación
         LocalNotifications.addListener('localNotificationReceived', (notification) => {
           console.log('🔔 Notificación recibida:', notification);
-          // Actualizar badge
           this.updateBadge();
         });
 
@@ -68,7 +77,7 @@ class NotificationService {
         return;
       }
 
-      const notificationId = parseInt(appointment.id.toString().replace(/\D/g, '').slice(0, 9)) || Date.now();
+      const notificationId = parseInt(appointment.id.toString().replace(/\D/g, '').slice(0, 9)) || Math.floor(Math.random() * 1000000);
 
       await LocalNotifications.schedule({
         notifications: [
@@ -78,15 +87,14 @@ class NotificationService {
             body: `Tienes una cita con ${appointment.clientName || 'un cliente'} en 1 hora - ${appointment.Service?.name || 'Servicio'}`,
             schedule: {
               at: notificationTime,
-              allowWhileIdle: true, // Importante: funcionar en modo reposo
+              allowWhileIdle: true,
             },
-            sound: 'default',
-            smallIcon: 'ic_stat_icon', // Icono pequeño
-            iconColor: '#8B00CC', // Color morado de la app
-            attachments: [],
-            actionTypeId: 'appointment_reminder',
+            channelId: 'appointment_reminders',
+            smallIcon: 'ic_launcher_foreground', // Usar el icono que ya sabemos que existe
+            iconColor: '#8B00CC',
             extra: {
               appointmentId: appointment.id,
+              employeeId: appointment.employeeId,
               type: 'appointment_reminder',
             },
           },

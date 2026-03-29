@@ -47,6 +47,11 @@ try {
     const roundPath = path.join(folderPath, 'ic_launcher_round.png');
     fs.writeFileSync(roundPath, imageBuffer);
     console.log(`  ✅ ${folder}/ic_launcher_round.png`);
+
+    // Copiar como ic_launcher_foreground.png (para uso en adaptive icons)
+    const foregroundPath = path.join(folderPath, 'ic_launcher_foreground.png');
+    fs.writeFileSync(foregroundPath, imageBuffer);
+    console.log(`  ✅ ${folder}/ic_launcher_foreground.png`);
   }
 
   console.log('\n🎉 Iconos PNG copiados a todas las carpetas mipmap!');

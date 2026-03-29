@@ -99,7 +99,7 @@ export default function Login() {
         <div className="divider" />
         <div style={{ textAlign: 'center', fontSize: 13, color: 'var(--text-muted)' }}>
           ¿No tienes cuenta?{' '}
-          <Link to="/register" style={{ color: 'var(--primary)', fontWeight: 600 }}>Regístrate aquí</Link>
+          <Link to="/register-vendor" style={{ color: 'var(--primary)', fontWeight: 600 }}>Regístrate aquí</Link>
         </div>
       </div>
     </div>

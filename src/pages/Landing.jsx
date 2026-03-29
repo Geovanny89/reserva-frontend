@@ -17,19 +17,24 @@ export default function Landing() {
 
   const plans = [
     {
-      name: 'Starter', price: '$29', period: '/mes', desc: 'Para negocios pequeños', color: '#667eea',
-      features: ['Hasta 3 empleados', 'Citas ilimitadas', 'App móvil personalizada', 'Soporte por email'],
-      cta: 'Comenzar',
-    },
-    {
-      name: 'Professional', price: '$79', period: '/mes', desc: 'Para negocios en crecimiento', color: '#764ba2', popular: true,
-      features: ['Hasta 10 empleados', 'Citas ilimitadas', 'App móvil + Web', 'Reportes avanzados', 'Soporte prioritario'],
-      cta: 'Comenzar',
-    },
-    {
-      name: 'Enterprise', price: 'Personalizado', period: '', desc: 'Para grandes operaciones', color: '#f093fb',
-      features: ['Empleados ilimitados', 'Múltiples sucursales', 'Integraciones custom', 'Soporte 24/7', 'Capacitación incluida'],
-      cta: 'Contactar',
+      name: 'KDice POS Pro', 
+      price: '$60,000', 
+      period: 'COP/mes', 
+      desc: 'Todo incluido para tu negocio', 
+      color: '#667eea',
+      popular: true,
+      features: [
+        '✅ Citas ilimitadas',
+        '✅ Empleados ilimitados', 
+        '✅ App móvil personalizada (APK)',
+        '✅ Página web de reservas',
+        '✅ Recordatorios automáticos por email',
+        '✅ Reportes de ingresos y comisiones',
+        '✅ Soporte prioritario',
+        '✅ Personalización de marca (colores, logo)',
+        '✅ Galería de fotos y horarios'
+      ],
+      cta: 'Comenzar Ahora',
     },
   ];
 
@@ -164,7 +169,7 @@ export default function Landing() {
         </p>
         <div className="hero-btns" style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
           <button
-            onClick={() => navigate('/register')}
+            onClick={() => navigate('/register-vendor')}
             className="cta-btn-white"
             style={{ color: '#667eea' }}
           >
@@ -215,21 +220,15 @@ export default function Landing() {
 
       {/* ── PRICING ── */}
       <section id="pricing" className="section-pad" style={{ padding: '80px 24px', maxWidth: 1200, margin: '0 auto' }}>
-        <h2 className="pricing-h2" style={{ fontSize: 'clamp(24px, 5vw, 40px)', fontWeight: 800, textAlign: 'center', marginBottom: 56, color: '#1a202c' }}>
-          Planes Simples y Transparentes
+        <h2 className="pricing-h2" style={{ fontSize: 'clamp(24px, 5vw, 40px)', fontWeight: 800, textAlign: 'center', marginBottom: 16, color: '#1a202c' }}>
+          Plan Único, Todo Incluido
         </h2>
-        <div className="plans-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 28, alignItems: 'start' }}>
+        <p style={{ textAlign: 'center', color: '#718096', marginBottom: 48, fontSize: 16 }}>
+          Suscripción mensual de $60,000 COP. Sin contratos, cancela cuando quieras.
+        </p>
+        <div className="plans-grid" style={{ display: 'flex', justifyContent: 'center', gap: 28 }}>
           {plans.map((plan, i) => (
-            <div key={i} className={`plan-card${plan.popular ? ' popular' : ''}`}>
-              {plan.popular && (
-                <div style={{
-                  position: 'absolute', top: -14, left: '50%', transform: 'translateX(-50%)',
-                  background: '#667eea', color: 'white', padding: '5px 16px',
-                  borderRadius: 20, fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap',
-                }}>
-                  MÁS POPULAR
-                </div>
-              )}
+            <div key={i} className="plan-card popular" style={{ maxWidth: 400, width: '100%' }}>
               <h3 style={{ fontSize: 22, fontWeight: 700, marginBottom: 6, color: '#1a202c' }}>{plan.name}</h3>
               <p style={{ fontSize: 13, color: '#718096', marginBottom: 20 }}>{plan.desc}</p>
               <div style={{ marginBottom: 24 }}>
@@ -237,7 +236,7 @@ export default function Landing() {
                 <span style={{ fontSize: 14, color: '#718096' }}>{plan.period}</span>
               </div>
               <button
-                onClick={() => navigate('/register')}
+                onClick={() => navigate('/register-vendor')}
                 style={{
                   background: plan.color, color: 'white', border: 'none', borderRadius: 8,
                   padding: '11px 20px', fontWeight: 700, fontSize: 14, cursor: 'pointer',
@@ -251,7 +250,7 @@ export default function Landing() {
               <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                 {plan.features.map((f, j) => (
                   <li key={j} style={{ padding: '10px 0', borderBottom: '1px solid #e2e8f0', fontSize: 14, color: '#4a5568' }}>
-                    ✅ {f}
+                    {f}
                   </li>
                 ))}
               </ul>
@@ -296,7 +295,7 @@ export default function Landing() {
         </p>
         <div className="hero-btns" style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
           <button
-            onClick={() => navigate('/register')}
+            onClick={() => navigate('/register-vendor')}
             className="cta-btn-white"
             style={{ color: '#667eea' }}
           >

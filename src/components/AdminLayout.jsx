@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import MobileMenu from './MobileMenu';
 import {
   LayoutDashboard, Store, Scissors, Users, Calendar, ClipboardList,
-  BarChart3, DollarSign, LogOut, Bell, ChevronRight, Download
+  BarChart3, DollarSign, LogOut, Bell, AlertTriangle, Download
 } from 'lucide-react';
 
 const NAV_ITEMS = [
@@ -46,6 +46,10 @@ export default function AdminLayout({ children, title, subtitle }) {
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
+
+  // Calcular días restantes de suscripción
+  const subscriptionDaysLeft = business?.subscriptionDaysLeft ?? null;
+  const showSubscriptionWarning = subscriptionDaysLeft !== null && subscriptionDaysLeft <= 5 && subscriptionDaysLeft > 0;
 
   // Detectar cambios de tamaño de pantalla
   useEffect(() => {
@@ -160,6 +164,33 @@ export default function AdminLayout({ children, title, subtitle }) {
         </header>
 
         <div className="page-content fade-in">
+          {/* Banner de advertencia de suscripción */}
+          {showSubscriptionWarning && (
+            <div style={{
+              background: '#fef3c7',
+              border: '1px solid #fbbf24',
+              borderRadius: 8,
+              padding: '12px 16px',
+              marginBottom: 20,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12,
+              color: '#92400e'
+            }}>
+              <AlertTriangle size={20} />
+              <div style={{ flex: 1 }}>
+                <strong>⚠️ Tu suscripción vence en {subscriptionDaysLeft} {subscriptionDaysLeft === 1 ? 'día' : 'días'}</strong>
+                <p style={{ margin: '4px 0 0 0', fontSize: 14 }}>
+                  Renueva tu plan de $60,000 COP mensual para seguir usando todas las funciones. 
+                  <a href="https://wa.me/573001234567?text=Hola%20quiero%20renovar%20mi%20suscripción%20KDice" 
+                     target="_blank" rel="noreferrer"
+                     style={{ color: '#92400e', fontWeight: 600, textDecoration: 'underline' }}>
+                    Contactar soporte →
+                  </a>
+                </p>
+              </div>
+            </div>
+          )}
           {children}
         </div>
       </main>
