@@ -1,44 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="192" height="192" viewBox="0 0 192 192" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Background gradient -->
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fondo degradado principal -->
   <defs>
-    <linearGradient id="bgGradient" x1="96" y1="0" x2="96" y2="192" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#FF5E00"/>
-      <stop offset="50%" stop-color="#E0007F"/>
-      <stop offset="100%" stop-color="#4B0082"/>
+    <linearGradient id="mainGradient" x1="512" y1="200" x2="512" y2="824" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FF6B00"/>
+      <stop offset="45%" stop-color="#E6007E"/>
+      <stop offset="100%" stop-color="#5E00B8"/>
     </linearGradient>
   </defs>
 
-  <!-- Background circle -->
-  <circle cx="96" cy="96" r="96" fill="url(#bgGradient)"/>
+  <!-- Fondo degradado -->
+  <rect width="1024" height="1024" fill="url(#mainGradient)"/>
 
-  <!-- White circle border -->
-  <circle cx="96" cy="96" r="84" fill="white" stroke="white" stroke-width="8"/>
+  <!-- Borde blanco cuadrado -->
+  <rect 
+    x="80" y="80" 
+    width="864" height="864" 
+    rx="120" 
+    fill="none" 
+    stroke="#FFFFFF" 
+    stroke-width="48"/>
 
-  <!-- Icon background gradient circle -->
-  <circle cx="96" cy="96" r="76" fill="url(#bgGradient)"/>
+  <!-- Contenido central -->
+  <!-- Calendario pequeño encima -->
+  <!-- Calendario fondo -->
+  <rect 
+    x="412" y="240" 
+    width="200" height="180" 
+    rx="20" 
+    fill="#FFFFFF"/>
 
-  <!-- Calendar icon (simplified for small size) -->
-  <!-- Calendar outer rectangle -->
-  <rect x="56" y="56" width="80" height="60" rx="6" fill="white" stroke="#1A1A1A" stroke-width="3"/>
+  <!-- Parte superior del calendario (pestañas) -->
+  <rect 
+    x="445" y="215" 
+    width="32" height="38" 
+    rx="6" 
+    fill="#FFFFFF"/>
+  <rect 
+    x="547" y="215" 
+    width="32" height="38" 
+    rx="6" 
+    fill="#FFFFFF"/>
+
+  <!-- Líneas del calendario -->
+  <line x1="432" y1="300" x2="592" y2="300" stroke="#1A1A1A" stroke-width="14" stroke-linecap="round"/>
+  <line x1="432" y1="335" x2="592" y2="335" stroke="#1A1A1A" stroke-width="14" stroke-linecap="round"/>
   
-  <!-- Calendar top rings -->
-  <rect x="62" y="50" width="10" height="12" rx="1" fill="white"/>
-  <rect x="120" y="50" width="10" height="12" rx="1" fill="white"/>
+  <!-- Checkmark -->
+  <path d="M465 365 L490 390 L545 325" fill="none" stroke="#1A1A1A" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
 
-  <!-- Calendar grid lines -->
-  <line x1="62" y1="80" x2="130" y2="80" stroke="#1A1A1A" stroke-width="2"/>
-  <line x1="62" y1="96" x2="130" y2="96" stroke="#1A1A1A" stroke-width="2"/>
-  
-  <!-- Vertical grid lines -->
-  <line x1="76" y1="80" x2="76" y2="110" stroke="#1A1A1A" stroke-width="2"/>
-  <line x1="96" y1="80" x2="96" y2="110" stroke="#1A1A1A" stroke-width="2"/>
-  <line x1="116" y1="80" x2="116" y2="110" stroke="#1A1A1A" stroke-width="2"/>
+  <!-- Texto KD -->
+  <text 
+    x="512" y="680" 
+    text-anchor="middle" 
+    font-family="Arial Black, Helvetica, sans-serif" 
+    font-size="380" 
+    font-weight="900" 
+    fill="#FFFFFF" 
+    stroke="#1A1A1A" 
+    stroke-width="28" 
+    paint-order="stroke fill">KD</text>
 
-  <!-- Checkmark on calendar -->
-  <path d="M98 86 L102 92 L114 78" fill="none" stroke="#1A1A1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-
-  <!-- Hand tapping (simplified) -->
-  <!-- Index finger pointing down -->
-  <path d="M96 116 L96 132 L94 136 L98 136 L98 132" fill="white" stroke="#1A1A1A" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
