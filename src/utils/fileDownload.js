@@ -12,7 +12,6 @@ export async function saveFile({ filename, data, contentType, blob }) {
   
   if (isNative) {
     try {
-      // Convertir Blob a Base64 para Capacitor
       let base64Data;
       if (blob) {
         base64Data = await blobToBase64(blob);
@@ -22,24 +21,30 @@ export async function saveFile({ filename, data, contentType, blob }) {
         base64Data = data;
       }
 
-      // Guardar archivo en Downloads
+      // Guardar en Downloads del dispositivo
       const result = await Filesystem.writeFile({
-        path: filename,
+        path: `Download/${filename}`,
         data: base64Data,
-        directory: Directory.Documents,
+        directory: Directory.ExternalStorage,
         recursive: true,
       });
 
-      // Compartir archivo
-      await Share.share({
-        title: filename,
-        url: result.uri,
-        dialogTitle: 'Guardar archivo',
-      });
+      // Intentar compartir
+      try {
+        await Share.share({
+          title: filename,
+          text: `Archivo guardado: ${filename}`,
+          dialogTitle: 'Guardar archivo',
+        });
+      } catch (shareError) {
+        console.log('Share dialog cancelled or failed:', shareError);
+      }
 
+      alert(`✅ Archivo guardado en Descargas: ${filename}`);
       return { success: true, uri: result.uri };
     } catch (error) {
       console.error('Error guardando archivo:', error);
+      alert('❌ Error: ' + error.message);
       throw error;
     }
   } else {
@@ -54,7 +59,6 @@ export async function saveFile({ filename, data, contentType, blob }) {
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
     } else {
-      // Para datos string
       const blob = new Blob([data], { type: contentType });
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
@@ -91,30 +95,37 @@ export async function savePDF(doc, filename) {
   const isNative = Capacitor.isNativePlatform();
   
   if (isNative) {
-    // En APK, obtenemos el PDF como base64
-    const pdfData = doc.output('datauristring');
-    const base64 = pdfData.split(',')[1];
-    
-    await Filesystem.writeFile({
-      path: filename,
-      data: base64,
-      directory: Directory.Documents,
-      recursive: true,
-    });
+    try {
+      // Obtener PDF como base64
+      const pdfData = doc.output('datauristring');
+      const base64 = pdfData.split(',')[1];
+      
+      // Guardar en Downloads
+      await Filesystem.writeFile({
+        path: `Download/${filename}`,
+        data: base64,
+        directory: Directory.ExternalStorage,
+        recursive: true,
+      });
 
-    // Compartir
-    const fileInfo = await Filesystem.getUri({
-      path: filename,
-      directory: Directory.Documents,
-    });
+      // Intentar compartir
+      try {
+        await Share.share({
+          title: filename,
+          text: `PDF guardado: ${filename}`,
+          dialogTitle: 'Guardar PDF',
+        });
+      } catch (shareError) {
+        console.log('Share dialog cancelled:', shareError);
+      }
 
-    await Share.share({
-      title: filename,
-      url: fileInfo.uri,
-      dialogTitle: 'Guardar PDF',
-    });
+      alert(`✅ PDF guardado en Descargas: ${filename}`);
+    } catch (error) {
+      console.error('[savePDF] Error:', error);
+      alert('❌ Error al guardar PDF: ' + error.message);
+      throw error;
+    }
   } else {
-    // Web: descarga normal
     doc.save(filename);
   }
 }
@@ -126,34 +137,41 @@ export async function saveExcel(wb, filename) {
   const isNative = Capacitor.isNativePlatform();
   
   if (isNative) {
-    // Generar Excel como array buffer
-    const excelData = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-    const blob = new Blob([excelData], { 
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
-    });
-    
-    const base64 = await blobToBase64(blob);
-    
-    await Filesystem.writeFile({
-      path: filename,
-      data: base64,
-      directory: Directory.Documents,
-      recursive: true,
-    });
+    try {
+      // Generar Excel como array
+      const excelData = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+      const blob = new Blob([excelData], { 
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
+      });
+      
+      const base64 = await blobToBase64(blob);
+      
+      // Guardar en Downloads
+      await Filesystem.writeFile({
+        path: `Download/${filename}`,
+        data: base64,
+        directory: Directory.ExternalStorage,
+        recursive: true,
+      });
 
-    // Compartir
-    const fileInfo = await Filesystem.getUri({
-      path: filename,
-      directory: Directory.Documents,
-    });
+      // Intentar compartir
+      try {
+        await Share.share({
+          title: filename,
+          text: `Excel guardado: ${filename}`,
+          dialogTitle: 'Guardar Excel',
+        });
+      } catch (shareError) {
+        console.log('Share dialog cancelled:', shareError);
+      }
 
-    await Share.share({
-      title: filename,
-      url: fileInfo.uri,
-      dialogTitle: 'Guardar Excel',
-    });
+      alert(`✅ Excel guardado en Descargas: ${filename}`);
+    } catch (error) {
+      console.error('[saveExcel] Error:', error);
+      alert('❌ Error al guardar Excel: ' + error.message);
+      throw error;
+    }
   } else {
-    // Web: descarga normal
     XLSX.writeFile(wb, filename);
   }
 }

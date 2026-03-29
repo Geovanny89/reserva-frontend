@@ -280,6 +280,7 @@ export default function Reports() {
 
   // Descargar PDF (compatible con APK)
   const downloadPDF = async () => {
+    console.log('[downloadPDF] Starting...');
     try {
       const doc = new jsPDF();
       doc.setFillColor(79, 70, 229);
@@ -332,15 +333,18 @@ export default function Reports() {
       });
 
       const filename = `informe-${period}-${new Date().toISOString().slice(0, 10)}.pdf`;
+      console.log('[downloadPDF] Calling savePDF with filename:', filename);
       await savePDF(doc, filename);
+      console.log('[downloadPDF] savePDF completed');
     } catch (error) {
-      console.error('Error generando PDF:', error);
+      console.error('[downloadPDF] Error:', error);
       alert('Error al generar PDF: ' + error.message);
     }
   };
 
   // Descargar Excel (compatible con APK)
   const downloadExcel = async () => {
+    console.log('[downloadExcel] Starting...');
     try {
       const rows = appointments.map(a => ({
         'Fecha': new Date(a.startTime).toLocaleString('es-CO'),
@@ -371,9 +375,11 @@ export default function Reports() {
       XLSX.utils.book_append_sheet(wb, ws2, 'Resumen');
 
       const filename = `informe-${period}-${new Date().toISOString().slice(0, 10)}.xlsx`;
+      console.log('[downloadExcel] Calling saveExcel with filename:', filename);
       await saveExcel(wb, filename);
+      console.log('[downloadExcel] saveExcel completed');
     } catch (error) {
-      console.error('Error generando Excel:', error);
+      console.error('[downloadExcel] Error:', error);
       alert('Error al generar Excel: ' + error.message);
     }
   };
