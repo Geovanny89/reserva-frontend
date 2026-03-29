@@ -5,52 +5,46 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
     
-    <!-- Fondo gradiente -->
-    <path
-        android:fillColor="#FF8C00"
-        android:pathData="M54,54m-54,0a54,54 0,1 1,108 0a54,54 0,1 1,-108 0"/>
+    <!-- Fondo gradiente simple -->
     <path
         android:fillColor="#FF6B00"
-        android:pathData="M54,54m-48,0a48,48 0,1 1,96 0a48,48 0,1 1,-96 0"/>
+        android:pathData="M54,54m-54,0a54,54 0,1 1,108 0a54,54 0,1 1,-108 0"/>
     <path
         android:fillColor="#E6007E"
-        android:pathData="M54,54m-42,0a42,42 0,1 1,84 0a42,42 0,1 1,-84 0"/>
-    <path
-        android:fillColor="#8B00CC"
-        android:pathData="M54,54m-36,0a36,36 0,1 1,72 0a36,36 0,1 1,-72 0"/>
+        android:pathData="M54,54m-48,0a48,48 0,1 1,96 0a48,48 0,1 1,-96 0"/>
     
     <!-- Borde blanco -->
     <path
         android:fillColor="#FFFFFF"
         android:pathData="M54,54m-30,0a30,30 0,1 1,60 0a30,30 0,1 1,-60 0"/>
-    <path
-        android:fillColor="#FF8C00"
-        android:pathData="M54,54m-26,0a26,26 0,1 1,52 0a26,26 0,1 1,-52 0"/>
     
-    <!-- Calendario -->
+    <!-- Texto KD grande y simple -->
     <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M38,28h32v24h-32z"/>
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M42,24h4v4h-4z"/>
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M62,24h4v4h-4z"/>
+        android:fillColor="#FF6B00"
+        android:pathData="M30,70h8v12h-8zM40,70h4v12h-2v-8h-2zM46,70h8v12h-8zM56,70h8v12h-8z"/>
     
-    <!-- Checkmark -->
+    <!-- Calendario simple -->
+    <rect
+        android:fillColor="#FFFFFF"
+        android:width="24dp"
+        android:height="18dp"
+        android:x="42dp"
+        android:y="30dp"/>
+    <rect
+        android:fillColor="#FFFFFF"
+        android:width="3dp"
+        android:height="4dp"
+        android:x="44dp"
+        android:y="28dp"/>
+    <rect
+        android:fillColor="#FFFFFF"
+        android:width="3dp"
+        android:height="4dp"
+        android:x="59dp"
+        android:y="28dp"/>
+    
+    <!-- Checkmark simple -->
     <path
         android:fillColor="#000000"
-        android:strokeColor="#000000"
-        android:strokeWidth="2"
-        android:strokeLineCap="round"
-        android:strokeLineJoin="round"
-        android:pathData="M46,44l4,4l8,-8"/>
-    
-    <!-- Texto KD -->
-    <path
-        android:fillColor="#FFFFFF"
-        android:strokeColor="#000000"
-        android:strokeWidth="1"
-        android:pathData="M30,70h8v12h-8zM40,70h4v12h-2v-8h-2zM46,70h8v2h-6v3h4v2h-4v3h6v2h-8zM56,70h8v12h-2v-10h-4v10h-2z"/>
+        android:pathData="M46,38l2,2l4,-4"/>
 </vector>
