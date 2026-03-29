@@ -5,46 +5,21 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
     
-    <!-- Fondo gradiente simple -->
+    <!-- Fondo gradiente de colores KD -->
     <path
         android:fillColor="#FF6B00"
         android:pathData="M54,54m-54,0a54,54 0,1 1,108 0a54,54 0,1 1,-108 0"/>
     <path
         android:fillColor="#E6007E"
         android:pathData="M54,54m-48,0a48,48 0,1 1,96 0a48,48 0,1 1,-96 0"/>
-    
-    <!-- Borde blanco -->
     <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M54,54m-30,0a30,30 0,1 1,60 0a30,30 0,1 1,-60 0"/>
+        android:fillColor="#8B00CC"
+        android:pathData="M54,54m-42,0a42,42 0,1 1,84 0a42,42 0,1 1,-84 0"/>
     
-    <!-- Texto KD grande y simple -->
-    <path
-        android:fillColor="#FF6B00"
-        android:pathData="M30,70h8v12h-8zM40,70h4v12h-2v-8h-2zM46,70h8v12h-8zM56,70h8v12h-8z"/>
-    
-    <!-- Calendario simple -->
-    <rect
-        android:fillColor="#FFFFFF"
-        android:width="24dp"
-        android:height="18dp"
-        android:x="42dp"
-        android:y="30dp"/>
-    <rect
-        android:fillColor="#FFFFFF"
-        android:width="3dp"
-        android:height="4dp"
-        android:x="44dp"
-        android:y="28dp"/>
-    <rect
-        android:fillColor="#FFFFFF"
-        android:width="3dp"
-        android:height="4dp"
-        android:x="59dp"
-        android:y="28dp"/>
-    
-    <!-- Checkmark simple -->
-    <path
-        android:fillColor="#000000"
-        android:pathData="M46,38l2,2l4,-4"/>
+    <!-- Texto KD usando path (compatible con vector) -->
+    <group android:name="kd_text">
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M30,35h8v20h-8zM38,35h4v20h-2v-16h-2zM44,35h8v20h-8zM52,35h8v20h-8z"/>
+    </group>
 </vector>
