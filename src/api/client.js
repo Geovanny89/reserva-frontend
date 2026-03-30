@@ -1,14 +1,17 @@
 import axios from 'axios';
 import { Capacitor } from '@capacitor/core';
 
-const envApiUrl = import.meta.env.VITE_API_URL?.trim();
+const envApiUrl = (import.meta.env.VITE_API_URL || '').trim().replace(/['"`]/g, '');
 const isNativeApp = Capacitor.isNativePlatform();
 
 // Si es APK, priorizar la URL de producción si envApiUrl no está disponible o no es HTTPS
-const defaultNativeURL = 'https://www.api-reservas.k-dice.com/api';
-const baseURL = isNativeApp 
+const defaultNativeURL = 'https://api-reservas.k-dice.com/api';
+let rawBaseURL = isNativeApp 
   ? (envApiUrl && envApiUrl.startsWith('http') ? envApiUrl : defaultNativeURL)
   : (envApiUrl || '/api');
+
+// Limpiar la URL base de posibles barras diagonales finales para evitar doble barra //
+const baseURL = rawBaseURL.endsWith('/') ? rawBaseURL.slice(0, -1) : rawBaseURL;
 
 if (isNativeApp) {
   console.log('Capacitor BaseURL:', baseURL);

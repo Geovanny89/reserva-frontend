@@ -24,14 +24,17 @@ export default function Login() {
       else if (role === 'employee') navigate('/employee');
       else if (role === 'superadmin') navigate('/superadmin');
       else navigate('/my-appointments');
-    } catch (err) {
-      if (!err.response) {
-        setError('No se pudo conectar al servidor. Revisa tu internet o la configuración del servidor.');
-        console.error('Network Error:', err);
-      } else {
-        setError(err.response?.data?.error || 'Error al iniciar sesión');
-      }
-    } finally {
+      } catch (err) {
+        if (!err.response) {
+          setError('No se pudo conectar al servidor. Revisa tu internet o la configuración del servidor.');
+          console.error('Network Error:', err);
+        } else {
+          // Intentar obtener el mensaje de error del servidor
+          const serverError = err.response.data?.error || err.response.data?.message || 'Error al iniciar sesión';
+          setError(serverError);
+          console.error('Login Error:', err.response.status, err.response.data);
+        }
+      } finally {
       setLoading(false);
     }
   };
