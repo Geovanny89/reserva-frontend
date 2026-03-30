@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import MobileMenu from './MobileMenu';
+import { Capacitor } from '@capacitor/core';
 import {
   LayoutDashboard, Store, Scissors, Users, Calendar, ClipboardList,
   BarChart3, DollarSign, LogOut, Bell, AlertTriangle, Download
@@ -146,7 +147,7 @@ export default function AdminLayout({ children, title, subtitle }) {
             {subtitle && <div className="topbar-subtitle">{subtitle}</div>}
           </div>
           <div className="topbar-actions">
-            {business?.slug && (
+            {!Capacitor.isNativePlatform() && business?.slug && (
               <a
                 href={`/${business.slug}`}
                 target="_blank"

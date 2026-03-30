@@ -3,6 +3,7 @@ import { useAuth } from '../../context/AuthContext';
 import api from '../../api/client';
 import AdminLayout from '../../components/AdminLayout';
 import { Store, Globe, Image, Palette, Share2, Clock, Eye, Upload, Trash2, Plus } from 'lucide-react';
+import { Capacitor } from '@capacitor/core';
 
 const BASE_URL = (api.defaults.baseURL || '').replace('/api', '');
 function getImgUrl(url) {
@@ -555,30 +556,32 @@ export default function MyBusiness() {
         {/* Panel lateral */}
         <div className="my-business-sidebar" style={{display:'flex',flexDirection:'column',gap:16,minWidth:0}}>
           {/* Enlace publico */}
-          <div className="card">
-            <h3 style={{fontSize:15,fontWeight:700,marginBottom:12,display:'flex',alignItems:'center',gap:8}}>
-              <Globe size={16} style={{color:'var(--primary)'}}/> Pagina publica
-            </h3>
-            {publicUrl ? (
-              <>
-                <div style={{background:'var(--bg-secondary)',border:'1px solid var(--border)',borderRadius:8,padding:'10px 14px',marginBottom:12,wordBreak:'break-all',fontSize:12,color:'var(--text-muted)',fontFamily:'monospace'}}>
-                  {publicUrl}
-                </div>
-                <div style={{display:'flex',gap:8}}>
-                  <button className="btn-primary" style={{flex:1,fontSize:12}} onClick={()=>{navigator.clipboard.writeText(publicUrl);showToast('Enlace copiado');}}>
-                    📋 Copiar
-                  </button>
-                  <a href={`/${business.slug}`} target="_blank" rel="noreferrer" style={{flex:1,textDecoration:'none'}}>
-                    <button className="btn-secondary" style={{width:'100%',fontSize:12}}>
-                      <Eye size={12}/> Ver
+          {!Capacitor.isNativePlatform() && (
+            <div className="card">
+              <h3 style={{fontSize:15,fontWeight:700,marginBottom:12,display:'flex',alignItems:'center',gap:8}}>
+                <Globe size={16} style={{color:'var(--primary)'}}/> Pagina publica
+              </h3>
+              {publicUrl ? (
+                <>
+                  <div style={{background:'var(--bg-secondary)',border:'1px solid var(--border)',borderRadius:8,padding:'10px 14px',marginBottom:12,wordBreak:'break-all',fontSize:12,color:'var(--text-muted)',fontFamily:'monospace'}}>
+                    {publicUrl}
+                  </div>
+                  <div style={{display:'flex',gap:8}}>
+                    <button className="btn-primary" style={{flex:1,fontSize:12}} onClick={()=>{navigator.clipboard.writeText(publicUrl);showToast('Enlace copiado');}}>
+                      📋 Copiar
                     </button>
-                  </a>
-                </div>
-              </>
-            ) : (
-              <p style={{color:'var(--text-muted)',fontSize:13}}>Guarda el negocio para generar el enlace.</p>
-            )}
-          </div>
+                    <a href={`/${business.slug}`} target="_blank" rel="noreferrer" style={{flex:1,textDecoration:'none'}}>
+                      <button className="btn-secondary" style={{width:'100%',fontSize:12}}>
+                        <Eye size={12}/> Ver
+                      </button>
+                    </a>
+                  </div>
+                </>
+              ) : (
+                <p style={{color:'var(--text-muted)',fontSize:13}}>Guarda el negocio para generar el enlace.</p>
+              )}
+            </div>
+          )}
 
           {/* Suscripcion */}
           <div className="card" style={{borderLeft:`5px solid ${SUB_STATUS_COLORS[business?.subscriptionStatus||'pending']}`}}>

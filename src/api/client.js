@@ -4,7 +4,7 @@ import { Capacitor } from '@capacitor/core';
 const envApiUrl = import.meta.env.VITE_API_URL?.trim();
 const isNativeApp = Capacitor.isNativePlatform();
 
-const baseURL = envApiUrl || (isNativeApp ? 'https://reservas.k-dice.com/api' : '/api');
+const baseURL = envApiUrl || (isNativeApp ? 'https://www.api-reservas.k-dice.com/api' : '/api');
 
 const api = axios.create({ baseURL });
 
