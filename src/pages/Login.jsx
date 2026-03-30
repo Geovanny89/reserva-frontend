@@ -25,7 +25,12 @@ export default function Login() {
       else if (role === 'superadmin') navigate('/superadmin');
       else navigate('/my-appointments');
     } catch (err) {
-      setError(err.response?.data?.error || 'Error al iniciar sesión');
+      if (!err.response) {
+        setError('No se pudo conectar al servidor. Revisa tu internet o la configuración del servidor.');
+        console.error('Network Error:', err);
+      } else {
+        setError(err.response?.data?.error || 'Error al iniciar sesión');
+      }
     } finally {
       setLoading(false);
     }
